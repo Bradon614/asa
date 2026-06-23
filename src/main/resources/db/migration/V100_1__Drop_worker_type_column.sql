@@ -1,1 +1,0 @@
-ALTER TABLE worker DROP COLUMN worker_type;

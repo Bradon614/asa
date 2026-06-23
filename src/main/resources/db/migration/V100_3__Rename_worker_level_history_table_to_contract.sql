@@ -1,1 +1,0 @@
-ALTER TABLE worker_level_history RENAME TO contract;

@@ -1,2 +1,0 @@
-ALTER TABLE contract
-    ADD COLUMN IF NOT EXISTS company VARCHAR;
