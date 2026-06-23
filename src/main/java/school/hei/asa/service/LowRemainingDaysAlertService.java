@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import school.hei.asa.mail.Email;
-import school.hei.asa.mail.Mailer;
+import school.hei.asa.mail.YoTechMailer;
 import school.hei.asa.model.Worker;
 import school.hei.asa.model.contract.Contract;
 import school.hei.asa.service.mapper.InternetAddressMapper;
@@ -21,24 +21,24 @@ import school.hei.asa.service.mapper.InternetAddressMapper;
 @Service
 public class LowRemainingDaysAlertService {
 
-  private final Mailer mailer;
+  private final YoTechMailer mailer;
   private final String accountants;
   private final InternetAddressMapper internetAddressMapper;
-  private final int lowRemainingDaysThreshold;
+  private final AppSettingsService appSettingsService;
 
   public LowRemainingDaysAlertService(
-      Mailer mailer,
+      YoTechMailer mailer,
       @Value("${ACCOUNTANTS}") String accountants,
-      @Value("${asa.low.remaining.days.threshold:10}") int lowRemainingDaysThreshold,
+      AppSettingsService appSettingsService,
       InternetAddressMapper internetAddressMapper) {
     this.mailer = mailer;
     this.accountants = accountants;
-    this.lowRemainingDaysThreshold = lowRemainingDaysThreshold;
+    this.appSettingsService = appSettingsService;
     this.internetAddressMapper = internetAddressMapper;
   }
 
   public int getLowRemainingDaysThreshold() {
-    return lowRemainingDaysThreshold;
+    return appSettingsService.getLowContractDaysThreshold();
   }
 
   /**
@@ -72,6 +72,10 @@ public class LowRemainingDaysAlertService {
             "ASA - ALERTE : %s a seulement %d jour(s) restant(s) sur son contrat",
             worker.name(), remainingDays);
 
+    var dateFormatter = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")
+        .withZone(java.time.ZoneId.of("UTC"));
+    var formattedEntranceDate = dateFormatter.format(contract.entranceInstant());
+
     var htmlBody =
         String.format(
             """
@@ -90,7 +94,7 @@ public class LowRemainingDaysAlertService {
             worker.name(),
             worker.code(),
             remainingDays,
-            contract.entranceInstant(),
+            formattedEntranceDate,
             contract.duration().toDays(),
             threshold);
 
