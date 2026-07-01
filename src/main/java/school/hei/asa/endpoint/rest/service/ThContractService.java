@@ -36,15 +36,17 @@ public class ThContractService {
   }
 
   public File generateCSV(String workerCode) {
-    var totalWorkDaysPerWorker = workerCode == null || workerCode.isBlank()
-        ? totalWorkDaysPerWorker()
-        : totalWorkDaysForOneWorker(workerCode);
+    var totalWorkDaysPerWorker =
+        workerCode == null || workerCode.isBlank()
+            ? totalWorkDaysPerWorker()
+            : totalWorkDaysForOneWorker(workerCode);
     String filePath = System.getProperty("java.io.tmpdir");
-    String fileName = workerCode == null || workerCode.isBlank()
-        ? "total_work_days-All.csv"
-        : "total_work_days-"
-            + totalWorkDaysPerWorker.keySet().stream().findFirst().get().name()
-            + ".csv";
+    String fileName =
+        workerCode == null || workerCode.isBlank()
+            ? "total_work_days-All.csv"
+            : "total_work_days-"
+                + totalWorkDaysPerWorker.keySet().stream().findFirst().get().name()
+                + ".csv";
     File file = new File(filePath, fileName);
     writeToFile(file, totalWorkDaysPerWorker);
     return file;
@@ -59,16 +61,17 @@ public class ThContractService {
               + lineSeparator());
       fileWriter.flush();
       totalWorkDaysPerWorker.forEach(
-          (worker, thContracts) -> thContracts.parallelStream()
-              .forEach(
-                  thContract -> {
-                    try {
-                      fileWriter.write(newEntryFrom(thContract, worker));
-                      fileWriter.flush();
-                    } catch (IOException e) {
-                      throw new RuntimeException(e);
-                    }
-                  }));
+          (worker, thContracts) ->
+              thContracts.parallelStream()
+                  .forEach(
+                      thContract -> {
+                        try {
+                          fileWriter.write(newEntryFrom(thContract, worker));
+                          fileWriter.flush();
+                        } catch (IOException e) {
+                          throw new RuntimeException(e);
+                        }
+                      }));
 
     } catch (IOException e) {
       throw new RuntimeException(e);
@@ -76,17 +79,19 @@ public class ThContractService {
   }
 
   private String newEntryFrom(ThContract thContract, Worker worker) {
-    String remainingDays = remainingDaysToString(thContract).equals("0") ? "-" : remainingDaysToString(thContract);
+    String remainingDays =
+        remainingDaysToString(thContract).equals("0") ? "-" : remainingDaysToString(thContract);
     String actualWorkedDays = actualWorkedDaysToString(thContract);
-    String newEntry = String.format(
-        "%s,%s,%s,%s,%s,%s,%s",
-        worker.code(),
-        worker.name(),
-        thContract.level(),
-        thContract.entranceInstant(),
-        thContract.duration(),
-        actualWorkedDays,
-        remainingDays);
+    String newEntry =
+        String.format(
+            "%s,%s,%s,%s,%s,%s,%s",
+            worker.code(),
+            worker.name(),
+            thContract.level(),
+            thContract.entranceInstant(),
+            thContract.duration(),
+            actualWorkedDays,
+            remainingDays);
     return newEntry + lineSeparator();
   }
 
@@ -95,7 +100,8 @@ public class ThContractService {
       return "-";
     }
 
-    var res = parseDouble(thContract.duration()) - parseDouble(actualWorkedDaysToString(thContract));
+    var res =
+        parseDouble(thContract.duration()) - parseDouble(actualWorkedDaysToString(thContract));
     return formatDays(res);
   }
 

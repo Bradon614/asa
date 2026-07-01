@@ -42,9 +42,12 @@ class LowRemainingDaysAlertServiceTest {
 
   @Test
   void check_and_alert_does_not_send_mail_if_above_threshold() {
-    Worker worker = new Worker("W-1", "Name", "email@test.com", "Full Name", "Addr", "City", "NIF", "STAT");
+    Worker worker =
+        new Worker("W-1", "Name", "email@test.com", "Full Name", "Addr", "City", "NIF", "STAT");
     ContractLevel level = mock(ContractLevel.class);
-    Contract contract = new Contract(worker, "Job", level, Instant.now(), null, Duration.ofDays(30), "Company", "key");
+    Contract contract =
+        new Contract(
+            worker, "Job", level, Instant.now(), null, Duration.ofDays(30), "Company", "key");
 
     service.checkAndAlert(worker, contract, 15);
 
@@ -53,9 +56,12 @@ class LowRemainingDaysAlertServiceTest {
 
   @Test
   void check_and_alert_sends_mail_if_below_threshold() throws Exception {
-    Worker worker = new Worker("W-1", "Name", "email@test.com", "Full Name", "Addr", "City", "NIF", "STAT");
+    Worker worker =
+        new Worker("W-1", "Name", "email@test.com", "Full Name", "Addr", "City", "NIF", "STAT");
     ContractLevel level = mock(ContractLevel.class);
-    Contract contract = new Contract(worker, "Job", level, Instant.now(), null, Duration.ofDays(30), "Company", "key");
+    Contract contract =
+        new Contract(
+            worker, "Job", level, Instant.now(), null, Duration.ofDays(30), "Company", "key");
 
     service.checkAndAlert(worker, contract, 5);
 
@@ -66,7 +72,9 @@ class LowRemainingDaysAlertServiceTest {
   void check_and_alert_handles_null_worker_email() throws Exception {
     Worker worker = new Worker("W-1", "Name", null, "Full Name", "Addr", "City", "NIF", "STAT");
     ContractLevel level = mock(ContractLevel.class);
-    Contract contract = new Contract(worker, "Job", level, Instant.now(), null, Duration.ofDays(30), "Company", "key");
+    Contract contract =
+        new Contract(
+            worker, "Job", level, Instant.now(), null, Duration.ofDays(30), "Company", "key");
 
     service.checkAndAlert(worker, contract, 5);
 
