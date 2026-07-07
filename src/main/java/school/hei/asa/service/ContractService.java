@@ -60,7 +60,7 @@ public class ContractService {
     var contracts = contractRepository.findAllByWorker(worker);
 
     if (contracts.isEmpty()) {
-      throw new IllegalStateException("Worker " + worker.code() + " has no contract.");
+      return Double.MAX_VALUE;
     }
 
     var activeContractOpt = contracts.stream().filter(c -> c.duration() != null).findFirst();
