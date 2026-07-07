@@ -5,7 +5,6 @@ import static java.util.Locale.FRENCH;
 import static java.util.Locale.US;
 import static school.hei.asa.model.DailyExecution.Type.fullCare;
 import static school.hei.asa.model.DailyExecution.Type.fullWork;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -30,8 +29,7 @@ public class ContractService {
   private final DailyExecutionRepository dailyExecutionRepository;
   private final MissionService missionService;
   private CareProductCodeSupplier careProductCodeSupplier;
-  private final DateTimeFormatter localDateFormatter =
-      DateTimeFormatter.ofPattern("dd MMM yyyy", FRENCH);
+  private final DateTimeFormatter localDateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy", FRENCH);
 
   public Map<Worker, List<Contract>> totalWorkDaysPerWorker() {
     return contractRepository.findAll().stream().collect(Collectors.groupingBy(Contract::worker));
@@ -51,8 +49,7 @@ public class ContractService {
 
   public String getActualWorkedDaysByDateByWorker(
       LocalDate startDate, String workerCode, LocalDate endDate) {
-    var dailyExecutions =
-        dailyExecutionRepository.findByWorkerCodeAndDateBetween(workerCode, startDate, endDate);
+    var dailyExecutions = dailyExecutionRepository.findByWorkerCodeAndDateBetween(workerCode, startDate, endDate);
     return executedDays(dailyExecutions);
   }
 
@@ -72,10 +69,9 @@ public class ContractService {
 
     var contract = activeContractOpt.get();
     var startDate = contract.entranceInstant().atZone(systemDefault()).toLocalDate();
-    var endDate =
-        contract.endInstant() == null
-            ? LocalDate.now()
-            : contract.endInstant().atZone(systemDefault()).toLocalDate();
+    var endDate = contract.endInstant() == null
+        ? LocalDate.now()
+        : contract.endInstant().atZone(systemDefault()).toLocalDate();
     var actualWorkedDays = getActualWorkedDaysByDateByWorker(startDate, worker.code(), endDate);
     var workedDays = actualWorkedDays.equals("-") ? 0d : Double.parseDouble(actualWorkedDays);
     var remainingDays = contract.duration().toDays() - workedDays;
@@ -87,26 +83,25 @@ public class ContractService {
     if (executions.isEmpty()) {
       return "-";
     }
-    var result =
-        executions.stream()
-            .map(
-                dailyExecution -> {
-                  var type = dailyExecution.type(careProductCodeSupplier.get());
-                  if (type.equals(fullWork)) {
-                    return 1.0d;
-                  } else if (type.equals(fullCare)) {
-                    return 0.0d;
-                  }
-                  return dailyExecution.executions().stream()
-                      .map(
-                          me -> {
-                            return missionService.isUnpaidCare(me) ? 0.0d : me.dayPercentage();
-                          })
-                      .reduce(Double::sum)
-                      .get();
-                })
-            .reduce(Double::sum)
-            .get();
+    var result = executions.stream()
+        .map(
+            dailyExecution -> {
+              var type = dailyExecution.type(careProductCodeSupplier.get());
+              if (type.equals(fullWork)) {
+                return 1.0d;
+              } else if (type.equals(fullCare)) {
+                return 0.0d;
+              }
+              return dailyExecution.executions().stream()
+                  .map(
+                      me -> {
+                        return missionService.isUnpaidCare(me) ? 0.0d : me.dayPercentage();
+                      })
+                  .reduce(Double::sum)
+                  .get();
+            })
+        .reduce(Double::sum)
+        .get();
     return String.format(US, "%.1f", result);
   }
 
