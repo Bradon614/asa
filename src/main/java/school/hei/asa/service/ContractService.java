@@ -120,7 +120,6 @@ public class ContractService {
     }
   }
 
-
   public Optional<String> checkAndBuildLowDaysAlertMessage(Worker worker) {
     var remainingDaysAfter = getRemainingDaysByWorker(worker);
     var activeContractOpt =
@@ -136,7 +135,9 @@ public class ContractService {
 
     return alertSent
         ? Optional.of(
-            "Please note : You have " + (long) remainingDaysAfter + " day(s) left on your contract !")
+            "Please note : You have "
+                + (long) remainingDaysAfter
+                + " day(s) left on your contract !")
         : Optional.empty();
   }
 
