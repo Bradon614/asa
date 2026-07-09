@@ -87,5 +87,6 @@ public class LowRemainingDaysAlertService {
 
     log.info("Sending alert email to accountants for worker '{}'", worker.code());
     mailer.accept(new Email(to, cc, List.of(), subject, htmlBody, List.of()));
+    log.info("Alert email sent to accountants for worker '{}'", worker.code());
   }
 }
