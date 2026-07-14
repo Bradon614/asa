@@ -78,9 +78,14 @@ public class CalendarController {
         });
     var lateReportedDaysByMonth = calendarService.lateReportedDaysByMonth(worker, year);
 
-    Double remainingDays = contractService.getRemainingDaysByWorker(worker);
-
-    boolean showWarning = contractService.isRemainingDaysLow(remainingDays);
+    Double remainingDays = null;
+    boolean showWarning = false;
+    try {
+      remainingDays = contractService.getRemainingDaysByWorker(worker);
+      showWarning = contractService.isRemainingDaysLow(remainingDays);
+    } catch (IllegalStateException ignored) {
+      // No active contract: calendar still renders with the null-remainingDays banner.
+    }
 
     model.addAttribute("remainingDays", remainingDays);
     model.addAttribute("showWarning", showWarning);
