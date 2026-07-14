@@ -58,20 +58,11 @@ public class ContractService {
     return executedDays(dailyExecutions);
   }
 
-  public Double getRemainingDaysByWorker(Worker worker) {
-    var contracts = contractRepository.findAllByWorker(worker);
+  public double getRemainingDaysByWorker(Worker worker) {
+    return computeRemainingDays(worker, getActiveContractOrThrow(worker));
+  }
 
-    if (contracts.isEmpty()) {
-      return null;
-    }
-
-    var activeContractOpt = contracts.stream().filter(c -> c.duration() != null).findFirst();
-
-    if (activeContractOpt.isEmpty()) {
-      return null;
-    }
-
-    var contract = activeContractOpt.get();
+  private double computeRemainingDays(Worker worker, Contract contract) {
     var startDate = contract.entranceInstant().atZone(systemDefault()).toLocalDate();
     var endDate =
         contract.endInstant() == null
@@ -79,9 +70,7 @@ public class ContractService {
             : contract.endInstant().atZone(systemDefault()).toLocalDate();
     var actualWorkedDays = getActualWorkedDaysByDateByWorker(startDate, worker.code(), endDate);
     var workedDays = actualWorkedDays.equals("-") ? 0d : Double.parseDouble(actualWorkedDays);
-    var remainingDays = contract.duration().toDays() - workedDays;
-
-    return remainingDays;
+    return contract.duration().toDays() - workedDays;
   }
 
   private String executedDays(List<DailyExecution> executions) {
@@ -113,23 +102,21 @@ public class ContractService {
 
   public Optional<String> checkRemainingDaysAndBuildAlertMessage(Worker worker) {
     var activeContract = getActiveContractOrThrow(worker);
-    var remainingDays = getRemainingDaysByWorker(worker);
+    var remainingDays = computeRemainingDays(worker, activeContract);
 
-    if (remainingDays != null && remainingDays <= 0) {
+    if (remainingDays <= 0) {
       throw new IllegalStateException(
           "You have no more days available under your contract. Please contact your"
               + " administrator.");
     }
 
     boolean alertSent =
-        remainingDays != null
-            && lowRemainingDaysAlertService.checkAndAlert(
-                worker, activeContract, remainingDays.longValue());
+        lowRemainingDaysAlertService.checkAndAlert(worker, activeContract, (long) remainingDays);
 
     return alertSent
         ? Optional.of(
             "Please note : You have "
-                + remainingDays.longValue()
+                + (long) remainingDays
                 + " day(s) left on your contract !")
         : Optional.empty();
   }
@@ -144,9 +131,8 @@ public class ContractService {
                     "You do not have an active contract. Please contact your administrator."));
   }
 
-  public boolean isRemainingDaysLow(Double remainingDays) {
-    return remainingDays != null
-        && lowRemainingDaysAlertService.isBelowThreshold(remainingDays.longValue());
+  public boolean isRemainingDaysLow(double remainingDays) {
+    return lowRemainingDaysAlertService.isBelowThreshold((long) remainingDays);
   }
 
   public List<Contract> findActiveContracts() {
