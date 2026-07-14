@@ -116,8 +116,7 @@ class LowRemainingDaysAlertServiceTest {
 
     Optional<String> message = service.checkRemainingDaysAndBuildAlertMessage(worker);
 
-    assertEquals(
-        Optional.of("Please note : You have 5 day(s) left on your contract !"), message);
+    assertEquals(Optional.of("Please note : You have 5 day(s) left on your contract !"), message);
     verify(mailer).accept(any());
   }
 
@@ -135,8 +134,7 @@ class LowRemainingDaysAlertServiceTest {
   }
 
   private static Worker worker() {
-    return new Worker(
-        "W-1", "Name", "email@test.com", "Full Name", "Addr", "City", "NIF", "STAT");
+    return new Worker("W-1", "Name", "email@test.com", "Full Name", "Addr", "City", "NIF", "STAT");
   }
 
   private static Contract contract(Worker worker) {

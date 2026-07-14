@@ -51,9 +51,7 @@ public class LowRemainingDaysAlertService {
 
     return alertSent
         ? Optional.of(
-            "Please note : You have "
-                + (long) remainingDays
-                + " day(s) left on your contract !")
+            "Please note : You have " + (long) remainingDays + " day(s) left on your contract !")
         : Optional.empty();
   }
 
