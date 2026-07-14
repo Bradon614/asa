@@ -57,8 +57,7 @@ public class LowRemainingDaysAlertService {
   }
 
   private void requestAlertEmail(Worker worker, long remainingDays) {
-    log.info(
-        "Requesting async alert email to accountants for worker '{}'", worker.code());
+    log.info("Requesting alert email to accountants for worker '{}'", worker.code());
     var event =
         LowRemainingDaysAlertRequested.builder()
             .workerCode(worker.code())

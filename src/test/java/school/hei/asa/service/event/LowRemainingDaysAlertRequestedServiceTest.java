@@ -49,8 +49,14 @@ class LowRemainingDaysAlertRequestedServiceTest {
     var level = mock(ContractLevel.class);
     var contract =
         new Contract(
-            worker, "Job", level, Instant.parse("2024-01-01T00:00:00Z"), null, Duration.ofDays(30),
-            "Company", "key");
+            worker,
+            "Job",
+            level,
+            Instant.parse("2024-01-01T00:00:00Z"),
+            null,
+            Duration.ofDays(30),
+            "Company",
+            "key");
     when(workerRepository.findByCode("W-1")).thenReturn(worker);
     when(contractService.getActiveContractOrThrow(worker)).thenReturn(contract);
 
