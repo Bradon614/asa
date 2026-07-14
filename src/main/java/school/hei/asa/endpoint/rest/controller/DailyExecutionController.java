@@ -26,7 +26,8 @@ public class DailyExecutionController {
 
   @GetMapping("/daily-execution")
   public String getDailyExecutionForm(Model model) {
-    model.addAttribute("missions", thMissionService.sortedMissionsWithoutMissionExecution());
+    var sortedMissions = thMissionService.sortedMissionsWithoutMissionExecution();
+    model.addAttribute("missions", sortedMissions);
     return "daily-execution";
   }
 

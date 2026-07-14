@@ -112,13 +112,7 @@ public class ContractService {
   }
 
   public void checkRemainingDaysAvailable(Worker worker) {
-    var activeContractOpt =
-        getAllContractsByWorker(worker).stream().filter(c -> c.duration() != null).findFirst();
-
-    if (activeContractOpt.isEmpty()) {
-      throw new IllegalStateException(
-          "You do not have an active contract. Please contact your administrator.");
-    }
+    getActiveContractOrThrow(worker);
 
     var remainingDays = getRemainingDaysByWorker(worker);
     if (remainingDays != null && remainingDays <= 0) {
@@ -129,9 +123,9 @@ public class ContractService {
   }
 
   public Optional<String> checkAndBuildLowDaysAlertMessage(Worker worker) {
-    var remainingDaysAfter = getRemainingDaysByWorker(worker);
     var activeContractOpt =
         getAllContractsByWorker(worker).stream().filter(c -> c.duration() != null).findFirst();
+    var remainingDaysAfter = getRemainingDaysByWorker(worker);
 
     if (activeContractOpt.isEmpty() || remainingDaysAfter == null) {
       return Optional.empty();
@@ -147,6 +141,16 @@ public class ContractService {
                 + remainingDaysAfter.longValue()
                 + " day(s) left on your contract !")
         : Optional.empty();
+  }
+
+  private Contract getActiveContractOrThrow(Worker worker) {
+    return getAllContractsByWorker(worker).stream()
+        .filter(c -> c.duration() != null)
+        .findFirst()
+        .orElseThrow(
+            () ->
+                new IllegalStateException(
+                    "You do not have an active contract. Please contact your administrator."));
   }
 
   public boolean isRemainingDaysLow(Double remainingDays) {
