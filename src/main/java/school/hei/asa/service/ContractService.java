@@ -111,36 +111,27 @@ public class ContractService {
     return String.format(US, "%.1f", result);
   }
 
-  public void checkRemainingDaysAvailable(Worker worker) {
-    getActiveContractOrThrow(worker);
-
+  public Optional<String> checkRemainingDaysAndBuildAlertMessage(Worker worker) {
+    var activeContract = getActiveContractOrThrow(worker);
     var remainingDays = getRemainingDaysByWorker(worker);
+
     if (remainingDays != null && remainingDays <= 0) {
       throw new IllegalStateException(
-          "You have no more days available under your contract. Please contact your"
-              + " administrator.");
-    }
-  }
-
-  public Optional<String> checkAndBuildLowDaysAlertMessage(Worker worker) {
-    var activeContractOpt =
-        getAllContractsByWorker(worker).stream().filter(c -> c.duration() != null).findFirst();
-    var remainingDaysAfter = getRemainingDaysByWorker(worker);
-
-    if (activeContractOpt.isEmpty() || remainingDaysAfter == null) {
-      return Optional.empty();
+              "You have no more days available under your contract. Please contact your"
+                      + " administrator.");
     }
 
     boolean alertSent =
-        lowRemainingDaysAlertService.checkAndAlert(
-            worker, activeContractOpt.get(), remainingDaysAfter.longValue());
+            remainingDays != null
+                    && lowRemainingDaysAlertService.checkAndAlert(
+                    worker, activeContract, remainingDays.longValue());
 
     return alertSent
-        ? Optional.of(
+            ? Optional.of(
             "Please note : You have "
-                + remainingDaysAfter.longValue()
-                + " day(s) left on your contract !")
-        : Optional.empty();
+            + remainingDays.longValue()
+            + " day(s) left on your contract !")
+            : Optional.empty();
   }
 
   private Contract getActiveContractOrThrow(Worker worker) {
