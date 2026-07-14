@@ -145,7 +145,7 @@ class DailyExecutionControllerIT extends FacadeIT {
     setUp();
     var dmeForm =
         new ThDailyExecutionForm(
-            "2024-12-01",
+            "2024-12-02",
             "mission1-code",
             "0.2",
             "missionComment1",
@@ -184,7 +184,9 @@ class DailyExecutionControllerIT extends FacadeIT {
 
     long successCount =
         responses.stream()
-            .filter(response -> response.contains("redirect:/work-and-care-calendar"))
+            .filter(
+                response ->
+                    response != null && response.contains("redirect:/work-and-care-calendar"))
             .count();
     assertEquals(1, successCount);
 
