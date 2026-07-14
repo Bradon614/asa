@@ -11,7 +11,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,7 +30,6 @@ public class ContractService {
   private final DailyExecutionRepository dailyExecutionRepository;
   private final MissionService missionService;
   private CareProductCodeSupplier careProductCodeSupplier;
-  private final LowRemainingDaysAlertService lowRemainingDaysAlertService;
   private final DateTimeFormatter localDateFormatter =
       DateTimeFormatter.ofPattern("dd MMM yyyy", FRENCH);
 
@@ -59,10 +57,10 @@ public class ContractService {
   }
 
   public double getRemainingDaysByWorker(Worker worker) {
-    return computeRemainingDays(worker, getActiveContractOrThrow(worker));
+    return getRemainingDaysByWorker(worker, getActiveContractOrThrow(worker));
   }
 
-  private double computeRemainingDays(Worker worker, Contract contract) {
+  public double getRemainingDaysByWorker(Worker worker, Contract contract) {
     var startDate = contract.entranceInstant().atZone(systemDefault()).toLocalDate();
     var endDate =
         contract.endInstant() == null
@@ -100,28 +98,7 @@ public class ContractService {
     return String.format(US, "%.1f", result);
   }
 
-  public Optional<String> checkRemainingDaysAndBuildAlertMessage(Worker worker) {
-    var activeContract = getActiveContractOrThrow(worker);
-    var remainingDays = computeRemainingDays(worker, activeContract);
-
-    if (remainingDays <= 0) {
-      throw new IllegalStateException(
-          "You have no more days available under your contract. Please contact your"
-              + " administrator.");
-    }
-
-    boolean alertSent =
-        lowRemainingDaysAlertService.checkAndAlert(worker, activeContract, (long) remainingDays);
-
-    return alertSent
-        ? Optional.of(
-            "Please note : You have "
-                + (long) remainingDays
-                + " day(s) left on your contract !")
-        : Optional.empty();
-  }
-
-  private Contract getActiveContractOrThrow(Worker worker) {
+  public Contract getActiveContractOrThrow(Worker worker) {
     return getAllContractsByWorker(worker).stream()
         .filter(c -> c.duration() != null)
         .findFirst()
@@ -129,10 +106,6 @@ public class ContractService {
             () ->
                 new IllegalStateException(
                     "You do not have an active contract. Please contact your administrator."));
-  }
-
-  public boolean isRemainingDaysLow(double remainingDays) {
-    return lowRemainingDaysAlertService.isBelowThreshold((long) remainingDays);
   }
 
   public List<Contract> findActiveContracts() {

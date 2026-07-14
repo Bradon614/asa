@@ -27,6 +27,7 @@ import school.hei.asa.model.Mission;
 import school.hei.asa.model.Worker;
 import school.hei.asa.service.CalendarService;
 import school.hei.asa.service.ContractService;
+import school.hei.asa.service.LowRemainingDaysAlertService;
 
 @Controller
 public class CalendarController {
@@ -35,16 +36,19 @@ public class CalendarController {
   private final WorkerFromAuthentication workerFromAuthentication;
   private final WorkerToModelAdder workerToModelAdder;
   private final ContractService contractService;
+  private final LowRemainingDaysAlertService lowRemainingDaysAlertService;
 
   public CalendarController(
       CalendarService calendarService,
       WorkerFromAuthentication workerFromAuthentication,
       WorkerToModelAdder workerToModelAdder,
-      ContractService contractService) {
+      ContractService contractService,
+      LowRemainingDaysAlertService lowRemainingDaysAlertService) {
     this.calendarService = calendarService;
     this.workerFromAuthentication = workerFromAuthentication;
     this.workerToModelAdder = workerToModelAdder;
     this.contractService = contractService;
+    this.lowRemainingDaysAlertService = lowRemainingDaysAlertService;
   }
 
   @GetMapping("/work-and-care-calendar")
@@ -82,7 +86,7 @@ public class CalendarController {
     boolean showWarning = false;
     try {
       remainingDays = contractService.getRemainingDaysByWorker(worker);
-      showWarning = contractService.isRemainingDaysLow(remainingDays);
+      showWarning = lowRemainingDaysAlertService.isBelowThreshold(remainingDays.longValue());
     } catch (IllegalStateException ignored) {
       // No active contract: calendar still renders with the null-remainingDays banner.
     }
