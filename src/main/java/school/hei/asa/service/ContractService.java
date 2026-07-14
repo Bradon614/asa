@@ -117,21 +117,21 @@ public class ContractService {
 
     if (remainingDays != null && remainingDays <= 0) {
       throw new IllegalStateException(
-              "You have no more days available under your contract. Please contact your"
-                      + " administrator.");
+          "You have no more days available under your contract. Please contact your"
+              + " administrator.");
     }
 
     boolean alertSent =
-            remainingDays != null
-                    && lowRemainingDaysAlertService.checkAndAlert(
-                    worker, activeContract, remainingDays.longValue());
+        remainingDays != null
+            && lowRemainingDaysAlertService.checkAndAlert(
+                worker, activeContract, remainingDays.longValue());
 
     return alertSent
-            ? Optional.of(
+        ? Optional.of(
             "Please note : You have "
-            + remainingDays.longValue()
-            + " day(s) left on your contract !")
-            : Optional.empty();
+                + remainingDays.longValue()
+                + " day(s) left on your contract !")
+        : Optional.empty();
   }
 
   private Contract getActiveContractOrThrow(Worker worker) {

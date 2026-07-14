@@ -44,12 +44,12 @@ public class DailyExecutionController {
     var worker = workerFromAuthentication.apply(authentication).get();
 
     contractService
-            .checkRemainingDaysAndBuildAlertMessage(worker)
-            .ifPresent(
-                    message -> {
-                      redirectAttributes.addFlashAttribute("toastMessage", message);
-                      redirectAttributes.addFlashAttribute("toastType", "warning");
-                    });
+        .checkRemainingDaysAndBuildAlertMessage(worker)
+        .ifPresent(
+            message -> {
+              redirectAttributes.addFlashAttribute("toastMessage", message);
+              redirectAttributes.addFlashAttribute("toastType", "warning");
+            });
     dailyExecutionRepository.save(thDailyExecutionFormMapper.toDomain(dmeForm, worker));
 
     return "redirect:/work-and-care-calendar";
