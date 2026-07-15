@@ -31,10 +31,6 @@ public class DailyExecutionController {
     return "daily-execution";
   }
 
-  public String createDailyExecution(Authentication authentication, ThDailyExecutionForm dmeForm) {
-    return createDailyExecutionWithRedirectAttributes(
-        authentication, dmeForm, new RedirectAttributesModelMap());
-  }
 
   @PostMapping("/daily-execution")
   public String createDailyExecutionWithRedirectAttributes(
