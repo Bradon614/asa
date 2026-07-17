@@ -81,7 +81,7 @@ public class CalendarController {
     var lateReportedDaysByMonth = calendarService.lateReportedDaysByMonth(worker, year);
 
     double remainingDays = calendarService.getRemainingDaysOnActiveContractOrZero(worker);
-    boolean showWarning = lowRemainingDaysAlertService.isBelowThreshold((long) remainingDays);
+    boolean showWarning = lowRemainingDaysAlertService.isBelowThreshold(remainingDays);
 
     model.addAttribute("remainingDays", remainingDays);
     model.addAttribute("showWarning", showWarning);
