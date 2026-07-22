@@ -19,8 +19,8 @@ public class LowRemainingDaysAlertService {
   private final ContractService contractService;
 
   public Optional<String> checkRemainingDaysAndBuildAlertMessage(Worker worker) {
-    var activeContract = contractService.getActiveContractOrThrow(worker);
-    var remainingDays = contractService.getRemainingDaysForContract(worker, activeContract);
+    contractService.getActiveContractOrThrow(worker);
+    var remainingDays = contractService.getRemainingDaysOnActiveContractOrZero(worker);
 
     if (!contractService.isBelowThreshold(remainingDays)) {
       return Optional.empty();
