@@ -82,12 +82,12 @@ public class ContractService {
   }
 
   public double getRemainingDaysOnActiveContractOrZero(Worker worker) {
-    return findActiveContract(worker)
-        .map(contract -> remainingDaysForContract(worker, contract))
-        .orElse(0d);
-  }
+    var activeContractOpt = findActiveContract(worker);
+    if (activeContractOpt.isEmpty()) {
+      return 0d;
+    }
 
-  private double remainingDaysForContract(Worker worker, Contract contract) {
+    var contract = activeContractOpt.get();
     var startDate = contract.entranceInstant().atZone(systemDefault()).toLocalDate();
     var endDate =
         contract.endInstant() == null
