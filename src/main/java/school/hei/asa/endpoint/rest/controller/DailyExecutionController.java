@@ -32,20 +32,20 @@ public class DailyExecutionController {
 
   @PostMapping("/daily-execution")
   public String createDailyExecutionWithRedirectAttributes(
-          Authentication authentication,
-          ThDailyExecutionForm dmeForm,
-          RedirectAttributes redirectAttributes) {
+      Authentication authentication,
+      ThDailyExecutionForm dmeForm,
+      RedirectAttributes redirectAttributes) {
     var worker = workerFromAuthentication.apply(authentication).get();
 
     dailyExecutionRepository.save(thDailyExecutionFormMapper.toDomain(dmeForm, worker));
 
     lowRemainingDaysAlertService
-            .checkRemainingDaysAndBuildAlertMessage(worker)
-            .ifPresent(
-                    message -> {
-                      redirectAttributes.addFlashAttribute("toastMessage", message);
-                      redirectAttributes.addFlashAttribute("toastType", "warning");
-                    });
+        .checkRemainingDaysAndBuildAlertMessage(worker)
+        .ifPresent(
+            message -> {
+              redirectAttributes.addFlashAttribute("toastMessage", message);
+              redirectAttributes.addFlashAttribute("toastType", "warning");
+            });
 
     return "redirect:/work-and-care-calendar";
   }
