@@ -70,9 +70,9 @@ public class ContractService {
 
   public Contract getActiveContractOrThrow(Worker worker) {
     return findActiveContract(worker)
-        .orElseThrow(
-            () ->
-                new IllegalStateException(
+      .orElseThrow(
+                    () ->
+            new IllegalStateException(
                     "You do not have an active contract. Please contact your administrator."));
   }
 
@@ -97,51 +97,50 @@ public class ContractService {
     var contract = activeContractOpt.get();
     var startDate = contract.entranceInstant().atZone(systemDefault()).toLocalDate();
     var endDate =
-        contract.endInstant() == null
-            ? LocalDate.now()
-            : contract.endInstant().atZone(systemDefault()).toLocalDate();
+            contract.endInstant() == null
+                    ? LocalDate.now()
+                    : contract.endInstant().atZone(systemDefault()).toLocalDate();
     var dailyExecutions =
-        dailyExecutionRepository.findByWorkerCodeAndDateBetween(worker.code(), startDate, endDate);
+            dailyExecutionRepository.findByWorkerCodeAndDateBetween(worker.code(), startDate, endDate);
     var workedDays = executedDays(dailyExecutions);
     return contract.duration().toDays() - workedDays;
   }
 
   public double executedDays(List<DailyExecution> executions) {
     return executions.stream()
-        .map(
-            dailyExecution -> {
-              var type = dailyExecution.type(careProductCodeSupplier.get());
-              if (type.equals(fullWork)) {
-                return 1.0d;
-              } else if (type.equals(fullCare)) {
-                return 0.0d;
-              }
-              return dailyExecution.executions().stream()
-                  .map(me -> missionService.isUnpaidCare(me) ? 0.0d : me.dayPercentage())
-                  .reduce(0.0d, Double::sum);
-            })
-        .reduce(0.0d, Double::sum);
+            .map(
+                    dailyExecution -> {
+                      var type = dailyExecution.type(careProductCodeSupplier.get());
+                      if (type.equals(fullWork)) {
+                        return 1.0d;
+                      } else if (type.equals(fullCare)) {
+                        return 0.0d;
+                      }
+                      return dailyExecution.executions().stream()
+                              .map(me -> missionService.isUnpaidCare(me) ? 0.0d : me.dayPercentage())
+                              .reduce(0.0d, Double::sum);
+                    })
+            .reduce(0.0d, Double::sum);
   }
 
   public Optional<String> checkRemainingDaysAndBuildAlertMessage(Worker worker) {
-    getActiveContractOrThrow(worker);
     var remainingDays = getRemainingDaysOnActiveContractOrZero(worker);
 
-    if (!isBelowThreshold(remainingDays)) {
+    if (remainingDays == 0 || !isBelowThreshold(remainingDays)) {
       return Optional.empty();
     }
 
     log.info("Requesting alert email to accountants for worker '{}'", worker.code());
     eventProducer.accept(
-        List.of(
-            LowRemainingDaysAlertRequested.builder()
-                .workerCode(worker.code())
-                .remainingDays(remainingDays)
-                .build()));
+            List.of(
+                    LowRemainingDaysAlertRequested.builder()
+                            .workerCode(worker.code())
+                            .remainingDays(remainingDays)
+                            .build()));
 
     return Optional.of(
-        "Please note : You have "
-            + DaysFormatter.format(remainingDays)
-            + " day(s) left on your contract !");
+            "Please note : You have "
+                    + DaysFormatter.format(remainingDays)
+                    + " day(s) left on your contract !");
   }
 }
