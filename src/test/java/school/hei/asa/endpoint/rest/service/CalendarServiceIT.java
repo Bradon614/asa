@@ -5,13 +5,11 @@ import static java.time.Month.NOVEMBER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static school.hei.asa.conf.EnvConf.DUMMY_CARE_PRODUCT_CODE;
 import static school.hei.asa.model.DailyExecution.Type.fullCare;
 import static school.hei.asa.model.DailyExecution.Type.fullWork;
 import static school.hei.asa.model.DailyExecution.Type.mixedWorkAndCare;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,7 +46,6 @@ class CalendarServiceIT extends FacadeIT {
   @BeforeEach
   void setUp() {
     authentication = authentication();
-    setUpProductsAndMissions();
   }
 
   @Test
