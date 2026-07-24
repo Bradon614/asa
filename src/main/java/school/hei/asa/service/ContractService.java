@@ -85,8 +85,7 @@ public class ContractService {
         contract.endInstant() == null
             ? LocalDate.now()
             : contract.endInstant().atZone(systemDefault()).toLocalDate();
-    var actualWorkedDays =
-        getActualWorkedDaysByDateByWorker(startDate, worker.code(), endDate);
+    var actualWorkedDays = getActualWorkedDaysByDateByWorker(startDate, worker.code(), endDate);
     var workedDays = actualWorkedDays.equals("-") ? 0d : Double.parseDouble(actualWorkedDays);
     return contract.duration().toDays() - workedDays;
   }
