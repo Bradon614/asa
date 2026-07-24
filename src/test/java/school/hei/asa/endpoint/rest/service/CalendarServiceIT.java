@@ -1,6 +1,5 @@
 package school.hei.asa.endpoint.rest.service;
 
-import static java.time.Month.DECEMBER;
 import static java.time.Month.JUNE;
 import static java.time.Month.NOVEMBER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
