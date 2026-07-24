@@ -11,21 +11,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import school.hei.asa.CareProductCodeSupplier;
-import school.hei.asa.endpoint.event.EventProducer;
-import school.hei.asa.endpoint.event.model.LowRemainingDaysAlertRequested;
 import school.hei.asa.model.DailyExecution;
 import school.hei.asa.model.Worker;
 import school.hei.asa.model.contract.Contract;
-import school.hei.asa.number.DaysFormatter;
 import school.hei.asa.repository.ContractRepository;
 import school.hei.asa.repository.DailyExecutionRepository;
 import school.hei.asa.repository.WorkerRepository;
 
-@Slf4j
 @Service
 public class ContractService {
   private final WorkerRepository workerRepository;
@@ -33,24 +27,18 @@ public class ContractService {
   private final DailyExecutionRepository dailyExecutionRepository;
   private final CareProductCodeSupplier careProductCodeSupplier;
   private final MissionService missionService;
-  private final EventProducer<LowRemainingDaysAlertRequested> eventProducer;
-  private final int lowRemainingDaysThreshold;
 
   public ContractService(
       WorkerRepository workerRepository,
       ContractRepository contractRepository,
       DailyExecutionRepository dailyExecutionRepository,
       CareProductCodeSupplier careProductCodeSupplier,
-      MissionService missionService,
-      EventProducer<LowRemainingDaysAlertRequested> eventProducer,
-      @Value("${LOW_CONTRACT_DAYS_THRESOLD}") int lowRemainingDaysThreshold) {
+      MissionService missionService) {
     this.workerRepository = workerRepository;
     this.contractRepository = contractRepository;
     this.dailyExecutionRepository = dailyExecutionRepository;
     this.careProductCodeSupplier = careProductCodeSupplier;
     this.missionService = missionService;
-    this.eventProducer = eventProducer;
-    this.lowRemainingDaysThreshold = lowRemainingDaysThreshold;
   }
 
   public Map<Worker, List<Contract>> totalWorkDaysPerWorker() {
@@ -83,10 +71,6 @@ public class ContractService {
 
   public List<Contract> findActiveContracts() {
     return contractRepository.findAllActiveContracts();
-  }
-
-  public boolean isBelowThreshold(double remainingDays) {
-    return remainingDays < lowRemainingDaysThreshold;
   }
 
   public double getRemainingDaysOnActiveContractOrZero(Worker worker) {
