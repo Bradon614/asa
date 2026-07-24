@@ -43,6 +43,7 @@ public class DailyExecutionController {
       RedirectAttributes redirectAttributes) {
     var worker = workerFromAuthentication.apply(authentication).get();
 
+    dailyExecutionRepository.save(thDailyExecutionFormMapper.toDomain(dmeForm, worker));
     contractService
         .checkRemainingDaysAndBuildAlertMessage(worker)
         .ifPresent(
@@ -50,7 +51,6 @@ public class DailyExecutionController {
               redirectAttributes.addFlashAttribute("toastMessage", message);
               redirectAttributes.addFlashAttribute("toastType", "warning");
             });
-    dailyExecutionRepository.save(thDailyExecutionFormMapper.toDomain(dmeForm, worker));
 
     return "redirect:/work-and-care-calendar";
   }
