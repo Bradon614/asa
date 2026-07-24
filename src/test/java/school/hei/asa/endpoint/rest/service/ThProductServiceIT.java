@@ -1,51 +1,18 @@
 package school.hei.asa.endpoint.rest.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.core.Authentication;
 import school.hei.asa.conf.FacadeIT;
 import school.hei.asa.endpoint.rest.model.th.ThMission;
 import school.hei.asa.endpoint.rest.model.th.ThMissionExecution;
 import school.hei.asa.endpoint.rest.model.th.ThProduct;
-import school.hei.asa.endpoint.rest.security.WorkerFromAuthentication;
-import school.hei.asa.model.Worker;
-import school.hei.asa.repository.WorkerRepository;
 
 class ThProductServiceIT extends FacadeIT {
   @Autowired ThProductService thProductService;
-  @Autowired WorkerRepository workerRepository;
-
-  @MockBean WorkerFromAuthentication workerFromAuthentication;
-
-  Authentication authentication;
-  Worker authenticatedWorker;
-
-  @BeforeEach
-  void setUp() {
-    authentication = mock(Authentication.class);
-    authenticatedWorker =
-        new Worker(
-            "workerCode",
-            "workerName",
-            "email",
-            "fullname",
-            "address",
-            "random city",
-            "nif",
-            "stat");
-    workerRepository.save(authenticatedWorker);
-    when(workerFromAuthentication.apply(authentication))
-        .thenReturn(Optional.of(authenticatedWorker));
-  }
 
   @Test
   void thProductsExecutedDays_count_by_month() {
