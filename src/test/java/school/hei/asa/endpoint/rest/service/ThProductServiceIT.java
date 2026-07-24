@@ -17,18 +17,12 @@ import school.hei.asa.endpoint.rest.model.th.ThMission;
 import school.hei.asa.endpoint.rest.model.th.ThMissionExecution;
 import school.hei.asa.endpoint.rest.model.th.ThProduct;
 import school.hei.asa.endpoint.rest.security.WorkerFromAuthentication;
-import school.hei.asa.model.Mission;
-import school.hei.asa.model.Product;
 import school.hei.asa.model.Worker;
-import school.hei.asa.repository.MissionRepository;
-import school.hei.asa.repository.ProductRepository;
 import school.hei.asa.repository.WorkerRepository;
 
 class ThProductServiceIT extends FacadeIT {
   @Autowired ThProductService thProductService;
   @Autowired WorkerRepository workerRepository;
-  @Autowired ProductRepository productRepository;
-  @Autowired MissionRepository missionRepository;
 
   @MockBean WorkerFromAuthentication workerFromAuthentication;
 
@@ -51,11 +45,6 @@ class ThProductServiceIT extends FacadeIT {
     workerRepository.save(authenticatedWorker);
     when(workerFromAuthentication.apply(authentication))
         .thenReturn(Optional.of(authenticatedWorker));
-    var product = new Product("product-code", "product-name", "product-description");
-    productRepository.save(product);
-    var mission1 = new Mission("mission1-code", "title1", "description1", 10, product);
-    var mission2 = new Mission("mission2-code", "title2", "description2", 2, product);
-    missionRepository.saveAll(List.of(mission1, mission2));
   }
 
   @Test
