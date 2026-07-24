@@ -1,6 +1,8 @@
 package school.hei.asa.endpoint.rest.service;
 
 import static java.time.Month.DECEMBER;
+import static java.time.Month.JUNE;
+import static java.time.Month.NOVEMBER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -46,7 +48,7 @@ class CalendarServiceIT extends FacadeIT {
     dailyExecutionController.createDailyExecutionWithRedirectAttributes(
         authentication,
         new ThDailyExecutionForm(
-            "2024-12-01",
+            "2023-11-15",
             "mission1-code",
             "0.2",
             "missionComment1",
@@ -65,11 +67,11 @@ class CalendarServiceIT extends FacadeIT {
         new RedirectAttributesModelMap());
 
     var worker = workerRepository.findByCode(authenticatedWorkerCode);
-    var datesByDailyExecutionType = calendarService.datesByDailyExecutionType(worker, 2024);
+    var datesByDailyExecutionType = calendarService.datesByDailyExecutionType(worker, 2023);
 
     var fullWorkDates = datesByDailyExecutionType.get(fullWork);
     assertEquals(1, fullWorkDates.size());
-    assertEquals(LocalDate.of(2024, DECEMBER, 1), fullWorkDates.get(0));
+    assertEquals(LocalDate.of(2023, NOVEMBER, 15), fullWorkDates.get(0));
     assertEquals(0, datesByDailyExecutionType.get(fullCare).size());
     assertEquals(0, datesByDailyExecutionType.get(mixedWorkAndCare).size());
   }
@@ -129,7 +131,7 @@ class CalendarServiceIT extends FacadeIT {
     dailyExecutionController.createDailyExecutionWithRedirectAttributes(
         authentication,
         new ThDailyExecutionForm(
-            "2024-06-01",
+            "2026-06-01",
             "mission1-code",
             "0.2",
             "missionComment1",
@@ -148,11 +150,13 @@ class CalendarServiceIT extends FacadeIT {
         new RedirectAttributesModelMap());
 
     var worker = workerRepository.findByCode(authenticatedWorkerCode);
-    var datesByDailyExecutionType = calendarService.datesByDailyExecutionType(worker, 2024);
+    var datesByDailyExecutionType = calendarService.datesByDailyExecutionType(worker, 2026);
 
     assertEquals(0, datesByDailyExecutionType.get(fullCare).size());
     assertEquals(0, datesByDailyExecutionType.get(fullWork).size());
-    assertEquals(1, datesByDailyExecutionType.get(mixedWorkAndCare).size());
+    var mixedDates = datesByDailyExecutionType.get(mixedWorkAndCare);
+    assertEquals(1, mixedDates.size());
+    assertEquals(LocalDate.of(2026, JUNE, 1), mixedDates.get(0));
   }
 
   private Authentication authentication() {
