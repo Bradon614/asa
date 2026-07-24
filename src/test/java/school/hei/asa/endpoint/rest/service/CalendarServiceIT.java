@@ -22,18 +22,12 @@ import school.hei.asa.endpoint.rest.controller.DailyExecutionController;
 import school.hei.asa.endpoint.rest.model.th.ThDailyExecutionForm;
 import school.hei.asa.endpoint.rest.security.SecurityConfig;
 import school.hei.asa.endpoint.rest.security.WorkerFromAuthentication;
-import school.hei.asa.model.Mission;
-import school.hei.asa.model.Product;
-import school.hei.asa.repository.MissionRepository;
-import school.hei.asa.repository.ProductRepository;
 import school.hei.asa.repository.WorkerRepository;
 import school.hei.asa.service.CalendarService;
 
 class CalendarServiceIT extends FacadeIT {
   @Autowired DailyExecutionController dailyExecutionController;
   @Autowired WorkerRepository workerRepository;
-  @Autowired ProductRepository productRepository;
-  @Autowired MissionRepository missionRepository;
 
   @MockBean SecurityConfig securityConfig;
   @MockBean WorkerFromAuthentication workerFromAuthentication;
@@ -170,16 +164,5 @@ class CalendarServiceIT extends FacadeIT {
     when(workerFromAuthentication.apply(authentication))
         .thenReturn(Optional.of(authenticatedWorker));
     return authentication;
-  }
-
-  private void setUpProductsAndMissions() {
-    var product = new Product("pcode", "pname", "pdescription");
-    var careProduct = new Product(DUMMY_CARE_PRODUCT_CODE, "", "");
-    productRepository.save(product);
-    productRepository.save(careProduct);
-    var mission1 = new Mission("mission1-code", "title1", "description1", 10, product);
-    var mission2 = new Mission("mission2-code", "title2", "description2", 2, product);
-    var careMission = new Mission("careMission-code", "", "", 2, careProduct);
-    missionRepository.saveAll(List.of(mission1, mission2, careMission));
   }
 }
