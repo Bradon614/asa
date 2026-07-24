@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,6 +29,7 @@ import school.hei.asa.model.Worker;
 import school.hei.asa.service.CalendarService;
 import school.hei.asa.service.ContractService;
 
+@AllArgsConstructor
 @Controller
 public class CalendarController {
 
@@ -35,17 +37,6 @@ public class CalendarController {
   private final WorkerFromAuthentication workerFromAuthentication;
   private final WorkerToModelAdder workerToModelAdder;
   private final ContractService contractService;
-
-  public CalendarController(
-      CalendarService calendarService,
-      WorkerFromAuthentication workerFromAuthentication,
-      WorkerToModelAdder workerToModelAdder,
-      ContractService contractService) {
-    this.calendarService = calendarService;
-    this.workerFromAuthentication = workerFromAuthentication;
-    this.workerToModelAdder = workerToModelAdder;
-    this.contractService = contractService;
-  }
 
   @GetMapping("/work-and-care-calendar")
   public String getCalendar(
@@ -111,7 +102,7 @@ public class CalendarController {
 
   private Map<LocalDate, Color> getColoredDates(int year, Worker worker) {
     Map<LocalDate, Color> coloredDays = new HashMap<>();
-    coloredDays.put(now(), BLUE);
+    coloredDays.put(now(), BLUE); // put it first so that today is re-colored if fully executed
     var datesByDailyExecutionType = calendarService.datesByDailyExecutionType(worker, year);
     datesByDailyExecutionType.get(fullWork).forEach(date -> coloredDays.put(date, GREEN));
     datesByDailyExecutionType.get(fullCare).forEach(date -> coloredDays.put(date, RED));
