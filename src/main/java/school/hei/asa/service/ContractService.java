@@ -117,25 +117,4 @@ public class ContractService {
     }
     return String.format(US, "%.1f", executedDays(dailyExecutions));
   }
-
-  public Optional<String> checkRemainingDaysAndBuildAlertMessage(Worker worker) {
-    var remainingDays = getRemainingDaysOnActiveContractOrZero(worker);
-
-    if (remainingDays == 0 || !isBelowThreshold(remainingDays)) {
-      return Optional.empty();
-    }
-
-    log.info("Requesting alert email to accountants for worker '{}'", worker.code());
-    eventProducer.accept(
-        List.of(
-            LowRemainingDaysAlertRequested.builder()
-                .workerCode(worker.code())
-                .remainingDays(remainingDays)
-                .build()));
-
-    return Optional.of(
-        "Please note : You have "
-            + DaysFormatter.format(remainingDays)
-            + " day(s) left on your contract !");
-  }
 }
