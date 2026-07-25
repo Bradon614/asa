@@ -46,8 +46,7 @@ public class LowRemainingDaysAlertRequestedService
       return;
     }
 
-    var subject =
-        String.format("ASA - ALERT: low remaining days - Worker %s", workerCode);
+    var subject = String.format("ASA - ALERT: low remaining days - Worker %s", workerCode);
     var body =
         String.format(
             "Hello,\n\n"
@@ -55,8 +54,7 @@ public class LowRemainingDaysAlertRequestedService
                 + "Please take the necessary action.\n\n"
                 + "Best regards,\n"
                 + "ASA",
-            workerCode,
-            remainingDays);
+            workerCode, remainingDays);
 
     log.info(
         "Sending low remaining days alert to accountants for worker={}, remainingDays={}",
