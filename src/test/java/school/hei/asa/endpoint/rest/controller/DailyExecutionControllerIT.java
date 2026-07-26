@@ -11,7 +11,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import jakarta.persistence.EntityManager;
-import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -92,8 +91,8 @@ class DailyExecutionControllerIT extends FacadeIT {
     jContract.setId("contract-test-id-" + UUID.randomUUID());
     jContract.setWorker(workerMapper.toEntity(authenticatedWorker));
     jContract.setLevel(entityManager.find(JContractLevel.class, contractLevelCode));
-    jContract.setEntranceInstant(Instant.now().minus(Duration.ofDays(30)));
-    jContract.setEndInstant(null);
+    jContract.setEntranceInstant(Instant.parse("2010-01-01T00:00:00Z"));
+    jContract.setEndInstant(Instant.parse("2010-12-31T00:00:00Z"));
     jContract.setJobTitle("job-title");
     jContract.setDurationInDays(180);
     jContract.setCompany("company");

@@ -10,7 +10,6 @@ import static school.hei.asa.model.DailyExecution.Type.fullWork;
 import static school.hei.asa.model.DailyExecution.Type.mixedWorkAndCare;
 
 import jakarta.persistence.EntityManager;
-import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
@@ -225,8 +224,8 @@ class CalendarServiceIT extends FacadeIT {
     jContract.setId("contract-test-id-" + UUID.randomUUID());
     jContract.setWorker(workerMapper.toEntity(worker));
     jContract.setLevel(entityManager.find(JContractLevel.class, contractLevelCode));
-    jContract.setEntranceInstant(Instant.now().minus(Duration.ofDays(30)));
-    jContract.setEndInstant(null);
+    jContract.setEntranceInstant(Instant.parse("2010-01-01T00:00:00Z"));
+    jContract.setEndInstant(Instant.parse("2010-12-31T00:00:00Z"));
     jContract.setJobTitle("job-title");
     jContract.setDurationInDays(180);
     jContract.setCompany("company");
