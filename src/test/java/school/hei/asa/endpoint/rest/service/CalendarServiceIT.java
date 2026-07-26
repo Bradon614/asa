@@ -9,14 +9,13 @@ import static school.hei.asa.model.DailyExecution.Type.fullCare;
 import static school.hei.asa.model.DailyExecution.Type.fullWork;
 import static school.hei.asa.model.DailyExecution.Type.mixedWorkAndCare;
 
+import jakarta.persistence.EntityManager;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
-import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -211,16 +210,16 @@ class CalendarServiceIT extends FacadeIT {
     var contractLevelCode = "level-code-" + UUID.randomUUID();
 
     new TransactionTemplate(transactionManager)
-            .execute(
-                    status -> {
-                      var jContractLevel = new JContractLevel();
-                      jContractLevel.setCode(contractLevelCode);
-                      jContractLevel.setType(ContractType.fullTimeEmployee);
-                      jContractLevel.setMonthlyPay(1000.0);
-                      jContractLevel.setDailyPay(50.0);
-                      entityManager.persist(jContractLevel);
-                      return null;
-                    });
+        .execute(
+            status -> {
+              var jContractLevel = new JContractLevel();
+              jContractLevel.setCode(contractLevelCode);
+              jContractLevel.setType(ContractType.fullTimeEmployee);
+              jContractLevel.setMonthlyPay(1000.0);
+              jContractLevel.setDailyPay(50.0);
+              entityManager.persist(jContractLevel);
+              return null;
+            });
 
     var jContract = new JContract();
     jContract.setId("contract-test-id-" + UUID.randomUUID());
