@@ -48,8 +48,7 @@ public class DailyExecutionController {
     var hasUsableContract =
         contractService.findActiveContractByWorker(worker).isPresent() && remainingDays > 0;
     if (!hasUsableContract) {
-      throw new IllegalStateException(
-          "Unable to punch in : you have no active contract.");
+      throw new IllegalStateException("Unable to punch in : you have no active contract.");
     }
 
     var dailyExecution = thDailyExecutionFormMapper.toDomain(dmeForm, worker);
