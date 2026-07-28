@@ -31,8 +31,7 @@ public class DailyExecutionController {
     model.addAttribute("missions", sortedMissions);
 
     model.addAttribute(
-        "hasUsableContract",
-        contractService.getRemainingDaysOnActiveContractOrZero(worker) > 0);
+        "hasUsableContract", contractService.getRemainingDaysOnActiveContractOrZero(worker) > 0);
 
     var warningBannerMessage =
         lowRemainingDaysAlertService.verifyRemainingDaysAndBuildAlertMessage(worker).orElse(null);
