@@ -22,7 +22,8 @@ class LowRemainingDaysAlertServiceIT extends FacadeIT {
   @Test
   void alert_message_built_without_sending_email_when_remaining_days_below_threshold() {
     var result =
-        lowRemainingDaysAlertService.verifyRemainingDaysAndBuildAlertMessage(workerBelowThreshold());
+        lowRemainingDaysAlertService.verifyRemainingDaysAndBuildAlertMessage(
+            workerBelowThreshold());
 
     assertTrue(result.isPresent());
     assertTrue(result.get().contains("day(s) left"));
@@ -46,7 +47,8 @@ class LowRemainingDaysAlertServiceIT extends FacadeIT {
   @Test
   void no_alert_when_remaining_days_above_threshold() {
     var result =
-        lowRemainingDaysAlertService.verifyRemainingDaysAndBuildAlertMessage(workerAboveThreshold());
+        lowRemainingDaysAlertService.verifyRemainingDaysAndBuildAlertMessage(
+            workerAboveThreshold());
 
     assertTrue(result.isEmpty());
     verify(eventProducer, never()).accept(any());
