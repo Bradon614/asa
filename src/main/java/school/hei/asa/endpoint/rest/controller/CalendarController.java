@@ -72,15 +72,12 @@ public class CalendarController {
     var lateReportedDaysByMonth = calendarService.lateReportedDaysByMonth(worker, year);
 
     var remainingDays = contractService.getRemainingDaysOnActiveContractOrZero(worker);
-    var hasUsableContract = remainingDays > 0;
-
-    model.addAttribute("remainingDays", hasUsableContract ? remainingDays : null);
-    model.addAttribute("hasUsableContract", hasUsableContract);
+    model.addAttribute("remainingDays", remainingDays > 0 ? remainingDays : null);
 
     var warningBannerMessage =
         lowRemainingDaysAlertService.verifyRemainingDaysAndBuildAlertMessage(worker).orElse(null);
     model.addAttribute("warningBannerMessage", warningBannerMessage);
-    if (hasUsableContract && warningBannerMessage != null) {
+    if (remainingDays > 0 && warningBannerMessage != null) {
       model.addAttribute("toastMessage", warningBannerMessage);
       model.addAttribute("toastType", "warning");
     }

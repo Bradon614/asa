@@ -57,9 +57,9 @@
 <div th:replace="fragments/header :: header"></div>
 
 <div th:if="${warningBannerMessage != null}"
-     th:class="${hasUsableContract}
-         ? 'text-center py-2 font-bold text-lg shadow-md w-full bg-yellow-400 text-black'
-         : 'text-center py-2 font-bold text-lg shadow-md w-full bg-red-600 text-white animate-pulse'"
+     th:class="${#strings.contains(warningBannerMessage, 'do not have an active contract')}
+         ? 'text-center py-2 font-bold text-lg shadow-md w-full bg-red-600 text-white animate-pulse'
+         : 'text-center py-2 font-bold text-lg shadow-md w-full bg-yellow-400 text-black'"
      th:text="${warningBannerMessage}">
 </div>
 
