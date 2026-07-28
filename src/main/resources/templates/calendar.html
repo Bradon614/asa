@@ -12,8 +12,8 @@
 <div th:replace="fragments/header :: header"></div>
 <div th:replace="fragments/toast :: toast"></div>
 
-<div th:if="${!hasUsableContract}" class="text-center py-2 font-bold text-lg shadow-md w-full bg-red-600 text-white animate-pulse">
-    Please note : You do not have an active contract. Please contact your administrator.
+<div th:if="${warningBannerMessage}" class="text-center py-2 font-bold text-lg shadow-md w-full bg-yellow-400 text-black">
+    <span th:text="${warningBannerMessage}"></span>
 </div>
 
 <div class="flex justify-between gap-6 py-6 bg-gray-50">
@@ -23,9 +23,9 @@
             <h1 th:text="${thYear.year()} + ' - ' + ${thYear.title()}"
                 class="text-2xl font-semibold">
             </h1>
-            <div th:if="${remainingDays != null and remainingDays < 100000}" class="relative group flex items-center">
+            <div th:if="${warningRemainingDays != null}" class="relative group flex items-center">
                 <span class="text-white font-bold text-2xl px-4 py-1.5 bg-[#16163F] rounded-full shadow-sm cursor-pointer"
-                      th:text="'J-' + ${T(school.hei.asa.number.DaysFormatter).format(remainingDays)}">
+                      th:text="'J-' + ${T(school.hei.asa.number.DaysFormatter).format(warningRemainingDays)}">
                 </span>
             </div>
         </div>
