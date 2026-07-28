@@ -30,14 +30,13 @@ public class DailyExecutionController {
     var sortedMissions = thMissionService.sortedMissionsWithoutMissionExecution();
     model.addAttribute("missions", sortedMissions);
 
-    var remainingDays = contractService.getRemainingDaysOnActiveContractOrZero(worker);
-    var hasUsableContract =
-        contractService.findActiveContractByWorker(worker).isPresent() && remainingDays > 0;
-    model.addAttribute("hasUsableContract", hasUsableContract);
+    model.addAttribute(
+        "hasUsableContract",
+        contractService.getRemainingDaysOnActiveContractOrZero(worker) > 0);
 
-    lowRemainingDaysAlertService
-        .verifyRemainingDaysAndBuildAlertMessage(worker)
-        .ifPresent(message -> model.addAttribute("warningBannerMessage", message));
+    var warningBannerMessage =
+        lowRemainingDaysAlertService.verifyRemainingDaysAndBuildAlertMessage(worker).orElse(null);
+    model.addAttribute("warningBannerMessage", warningBannerMessage);
 
     return "daily-execution";
   }
