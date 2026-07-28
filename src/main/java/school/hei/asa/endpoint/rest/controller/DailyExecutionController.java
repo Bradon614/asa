@@ -58,6 +58,10 @@ public class DailyExecutionController {
             message -> {
               redirectAttributes.addFlashAttribute("toastMessage", message);
               redirectAttributes.addFlashAttribute("toastType", "warning");
+              redirectAttributes.addFlashAttribute("warningBannerMessage", message);
+              redirectAttributes.addFlashAttribute(
+                  "warningRemainingDays",
+                  contractService.getRemainingDaysOnActiveContractOrZero(worker));
             });
 
     return "redirect:/work-and-care-calendar";
