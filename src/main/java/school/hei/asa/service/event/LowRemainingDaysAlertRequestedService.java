@@ -2,7 +2,6 @@ package school.hei.asa.service.event;
 
 import static org.reflections.Reflections.log;
 
-import jakarta.mail.internet.InternetAddress;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
